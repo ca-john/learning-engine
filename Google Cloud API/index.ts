@@ -1,8 +1,12 @@
 import { gql } from 'graphql-tag';
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import mongoose from 'mongoose';
+import mongoose, { ConnectOptions } from 'mongoose';
 
+import {
+	startServerAndCreateLambdaHandler,
+	handlers,
+  } from '@as-integrations/aws-lambda';
 
 // Construct a schema, using GraphQL schema language
 import typeDefs from './src/typeDefs';
@@ -13,7 +17,7 @@ import resolvers from './src/resolvers';
 const MONGODB :string = process.env.MONGODB!;
 
 
-mongoose.connect(MONGODB, { useNewUrlParser: true }).then(() => {
+mongoose.connect(MONGODB, { useNewUrlParser: true } as ConnectOptions).then(() => {
 	console.log("mongodb connection successful.");
 });
 
@@ -41,5 +45,5 @@ const server = new ApolloServer({
 
 
 
-
+// Passing an ApolloServer instance to the `startServerAndCreateLambdaHandler` function:
 exports.handler = server.createHandler();
